@@ -17,11 +17,11 @@ char *build_get_query(char *host, char *page);
 void usage();
      
 #define HOST "auctions.search.yahoo.co.jp"
-#define PAGE "search?fr=auc_top&p=LEGO+パーツ&oq=lego+pa&auccat=0&tab_ex=commerce&sc_i=auc_sug&ei=UTF-8&b=41" 
+#define PAGE "search?fr=auc_top&p=LEGO+ミニフィグ&oq=lego+mini&tab_ex=commerce&sc_i=auc_sug_cat&ei=UTF-8&b=621" 
 #define PORT 80
 #define USERAGENT "HTMLGET 1.0"
 
-#define BUFFERSIZE 12288
+#define BUFFERSIZE 8192
      
 int main(int argc, char **argv)
 {
@@ -77,7 +77,7 @@ int main(int argc, char **argv)
     memset(buf, 0, sizeof(buf));
 
     while((tmpres = recv(sock, buf, sizeof(buf), 0)) > 0){
-      	fprintf(stdout, buf);
+      	fprintf(stdout,"%s",buf);
      	memset(buf, 0, tmpres);
       }//end while
 

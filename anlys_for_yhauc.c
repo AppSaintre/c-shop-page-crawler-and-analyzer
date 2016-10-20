@@ -55,10 +55,13 @@ int main(void)
     
     //printf("%s\n",buff);
     //return 0;
-    /*Pick up the useful urls in turns with buff and tmpbuff*/
-    for(int turns=0;turns<LOOPPERPAGE;turns+=2)
+    /*Pick up the useful urls in turns with buff and tmpbuff*/ 
+    int turns;
+    int ctr =0;
+    for(turns=0;turns<LOOPPERPAGE;turns+=2)
     {
 	cursor = strstr(buff, "a1wrp");
+	if(cursor==NULL){ ctr = turns-1; break;}
     	int len = len_from_endchar(cursor+ALIGNMENT,'"');
     	//fprintf(stdout,"len %d\n",len);
     	copywith(linklist[turns],cursor+ALIGNMENT,len);
@@ -69,6 +72,7 @@ int main(void)
     	//fprintf(stdout,"%s\n",tmpbuff);
 
     	cursor = strstr(tmpbuff, "a1wrp");
+	if(cursor==NULL){ ctr = turns; break;}
     	len = len_from_endchar(cursor+ALIGNMENT,'"');
     	copywith(linklist[turns+1],cursor+ALIGNMENT,len);
     	fprintf(stdout,"url %d: %s\n",turns+1,linklist[turns+1]);
@@ -76,9 +80,11 @@ int main(void)
     	offset = (int)(cursor-tmpbuff)+ALIGNMENT+len;
     	copywith(buff,cursor+ALIGNMENT+len,BUFFERSIZE*MULTIPLE-offset);
     }
-  
+  //return 0;
+	if(turns==LOOPPERPAGE) ctr=LOOPPERPAGE-1;
 	int res;
-	for(int turns=0;turns<LOOPPERPAGE;turns++)
+	//fprintf(stdout," %d\n",turns);
+	for(turns=0;turns<=ctr&&ctr>=0;turns++)
 	{
 	    if(!judge_page(linklist[turns],"入札者評価制限")) fprintf(stdout,"%s, Not match\n",linklist[turns]); 
             else
@@ -169,6 +175,37 @@ int judge_page(char* url,char* filwords)
     memset(buf, 0, sizeof(buf));
     int htmlstart = 0;
     char * htmlcontent;
+/*
+    while((tmpres = recv(sock, buf, BUFFERSIZE, 0)) > 0){
+      if(htmlstart == 0)
+      {
+          htmlcontent = strstr(buf, "\r\n\r\n");
+          if(htmlcontent != NULL){
+            htmlstart = 1;
+            htmlcontent += 4;
+          }
+      }else{	htmlcontent = buf;	}
+      if(htmlstart)
+      {
+        if(NULL!=(cursor=strstr(buf, filwords)))
+	{
+	   copywith(tmp,cursor,140);
+	   //fprintf(stdout, "%s\n", tmp);	
+	   if(NULL!=strstr(tmp, "あり"))
+	   {
+	      free(get);
+      	      free(remote);
+      	      free(ip);
+      	      close(sock);
+	      //fprintf(stdout, "no matching,return.\n");
+      	      return 0;
+	   }
+	}
+      }
+     
+        memset(buf, 0, tmpres);
+      }//end while
+*/
     while((tmpres = recv(sock, buf, BUFFERSIZE, 0)) > 0){
       if(htmlstart == 0)
       {
